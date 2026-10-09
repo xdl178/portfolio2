@@ -1,0 +1,72 @@
+/* ============================================================
+   BlurHighlight · Azure Glass 浅色版（design.md §16 约定）
+   ============================================================ */
+
+.blur-highlight {
+  font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  font-weight: 400;
+  font-size: clamp(20px, 2.4vw, 30px);
+  line-height: 1.7;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  text-align: left;
+  text-wrap: pretty;
+  color: var(--ink-soft, #3d4e73);
+}
+
+.blur-highlight__word {
+  display: inline-block;
+  position: relative;
+  vertical-align: baseline;
+  will-change: filter, opacity;
+}
+
+.blur-highlight__space {
+  white-space: pre;
+}
+
+/* 关键词：品牌蓝加粗 + 浅蓝底衬 */
+.blur-highlight__word--kw {
+  font-weight: 900;
+  color: var(--azure-600, #1f51d6);
+}
+
+.blur-highlight__sweep {
+  position: absolute;
+  inset: -2px -4px;
+  z-index: -1;
+  border-radius: 6px;
+  background: var(--azure-50, #eef4ff);
+  pointer-events: none;
+  transform-origin: left center;
+}
+
+.blur-highlight__text {
+  position: relative;
+  z-index: 1;
+}
+
+.blur-highlight--lg {
+  font-size: clamp(24px, 2.8vw, 36px);
+  line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+  .blur-highlight {
+    font-size: clamp(16px, 4vw, 22px);
+    line-height: 1.75;
+  }
+  .blur-highlight__word--kw {
+    font-weight: 700;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blur-highlight__word,
+  .blur-highlight__sweep {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

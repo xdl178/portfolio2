@@ -1,0 +1,662 @@
+/* ============================================================
+   Azure Glass · 全站样式基座
+   设计规则唯一基准：/design.md
+   层次：Token 变量 → 基础 → 材质 → 组件 → 装饰 → 动效 → 降级
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------
+   1. Token（CSS 变量，供 JS / 非 Tailwind 场景使用）
+   ------------------------------------------------------------ */
+:root {
+  /* 基础 */
+  --bg: #f5f8ff;
+  --bg-deep: #edf3ff;
+  --ink: #0b1b3a;
+  --ink-soft: #3d4e73;
+  --ink-mute: #7c8aab;
+  --line: rgba(11, 27, 58, 0.08);
+
+  /* 品牌蓝 */
+  --azure-50: #eef4ff;
+  --azure-100: #dce9ff;
+  --azure-200: #bad3ff;
+  --azure-400: #5787ff;
+  --azure-500: #2f6bff;
+  --azure-600: #1f51d6;
+  --cyan: #00b8de;
+
+  /* 玻璃 */
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-top-light: rgba(255, 255, 255, 0.9);
+
+  /* 品牌渐变（design.md §1.4：全站仅 4 处） */
+  --grad-brand: linear-gradient(135deg, #2f6bff 0%, #00b8de 100%);
+
+  /* 动效 */
+  --ease-out-work: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-strong-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-press: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ------------------------------------------------------------
+   2. 基础
+   ------------------------------------------------------------ */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: auto; /* Lenis 接管 */
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(47, 107, 255, 0.18);
+    color: var(--ink);
+  }
+
+  /* 焦点环（design.md §5.2） */
+  :focus-visible {
+    outline: 2px solid var(--azure-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* 浅色滚动条 */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-deep);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(124, 138, 171, 0.35);
+    border-radius: 999px;
+    border: 2px solid var(--bg-deep);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 138, 171, 0.55);
+  }
+}
+
+/* ------------------------------------------------------------
+   3. Lenis 平滑滚动
+   ------------------------------------------------------------ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   4. 玻璃材质（三级，design.md §2）
+   ------------------------------------------------------------ */
+@layer components {
+  .glass-1 {
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 2px 6px rgba(16, 42, 96, 0.04);
+  }
+
+  .glass-2 {
+    background: rgba(255, 255, 255, 0.68);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow:
+      0 2px 6px rgba(16, 42, 96, 0.04),
+      0 16px 40px -12px rgba(16, 42, 96, 0.12),
+      inset 0 1px 0 var(--glass-top-light);
+  }
+
+  .glass-3 {
+    background: rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 1px 2px rgba(16, 42, 96, 0.05),
+      0 12px 32px -8px rgba(16, 42, 96, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-1,
+    .glass-2,
+    .glass-3 {
+      background: rgba(255, 255, 255, 0.92);
+    }
+  }
+
+  /* ----------------------------------------------------------
+     5. 品牌渐变（仅主 CTA / H1 关键词 / 进度条 / Logo）
+     ---------------------------------------------------------- */
+  .bg-grad {
+    background-image: var(--grad-brand);
+  }
+
+  .grad-text {
+    background-image: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* ----------------------------------------------------------
+     6. 按钮
+     ---------------------------------------------------------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-sans select-none;
+    transition:
+      transform 80ms var(--ease-press),
+      box-shadow 150ms var(--ease-out-work),
+      background-color 150ms var(--ease-out-work),
+      color 150ms var(--ease-out-work);
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn-primary {
+    @apply btn text-white rounded-full px-7 py-3 text-body-md font-medium;
+    background-image: var(--grad-brand);
+    box-shadow: 0 8px 24px -6px rgba(47, 107, 255, 0.35);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 12px 32px -6px rgba(47, 107, 255, 0.45);
+    filter: brightness(1.05);
+  }
+
+  .btn-ghost {
+    @apply btn rounded-full px-7 py-3 text-body-md font-medium;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(11, 27, 58, 0.1);
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  /* ----------------------------------------------------------
+     7. 标签 / 章节头
+     ---------------------------------------------------------- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-label;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    color: var(--ink-soft);
+    box-shadow: 0 2px 6px rgba(16, 42, 96, 0.04);
+  }
+
+  .chip-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .sec-kicker {
+    @apply inline-flex items-center gap-3 font-mono text-mono-label uppercase;
+    color: var(--azure-500);
+  }
+
+  .sec-kicker::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--azure-400);
+  }
+
+  /* ----------------------------------------------------------
+     8. 入场终态（JS 挂 .is-in 触发，design.md §7.2）
+     ---------------------------------------------------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+    transition:
+      opacity 0.4s var(--ease-out-work),
+      transform 0.4s var(--ease-out-work),
+      filter 0.4s var(--ease-out-work);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal.is-in {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* ------------------------------------------------------------
+   9. 站点背景装饰（固定层，App 外壳渲染）
+   ------------------------------------------------------------ */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 600px at 8% -10%, rgba(47, 107, 255, 0.06), transparent 60%),
+    radial-gradient(800px 640px at 100% 110%, rgba(0, 184, 222, 0.055), transparent 60%),
+    var(--bg);
+}
+
+/* 点阵网格：极淡，可被分区底色盖住 */
+.site-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(11, 27, 58, 0.35) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.05;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+}
+
+/* 极光光球：GSAP 漂移驱动（hero 内局部使用），CSS 版供低频场景 */
+.aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.aurora-orb--azure {
+  background: radial-gradient(circle at 35% 35%, rgba(47, 107, 255, 0.22), transparent 70%);
+}
+
+.aurora-orb--cyan {
+  background: radial-gradient(circle at 60% 40%, rgba(0, 184, 222, 0.2), transparent 70%);
+}
+
+.aurora-orb--dusk {
+  background: radial-gradient(circle at 50% 50%, rgba(93, 111, 224, 0.16), transparent 70%);
+}
+
+/* 超大 ghost 轮廓字（英文点缀装饰） */
+.ghost-word {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(47, 107, 255, 0.14);
+  letter-spacing: -0.02em;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   10. Marquee（关键词跑马灯）
+   ------------------------------------------------------------ */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration, 36s) linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee--reverse .marquee-track {
+  animation-direction: reverse;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  white-space: nowrap;
+}
+
+.marquee-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--azure-200);
+  flex: none;
+}
+
+/* ------------------------------------------------------------
+   11. 作品封面占位（PlaceholderCover 几何装饰）
+   ------------------------------------------------------------ */
+.ph-cover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* 白色半透明几何：叠在主题渐变上 */
+.ph-geo {
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.ph-ring {
+  border-style: solid;
+  border-width: 1.5px;
+  border-radius: 9999px;
+}
+
+.ph-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.ph-wave {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.ph-glow {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.22), transparent 65%);
+}
+
+/* 封面悬浮时几何缓缩放 */
+@media (hover: hover) and (pointer: fine) {
+  .ph-cover--zoomable .ph-zoom {
+    transition: transform 0.55s var(--ease-out-work);
+  }
+  .ph-cover--zoomable:hover .ph-zoom {
+    transform: scale(1.06);
+  }
+}
+
+/* ------------------------------------------------------------
+   12. 导航
+   ------------------------------------------------------------ */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition:
+    background-color 0.25s var(--ease-out-work),
+    box-shadow 0.25s var(--ease-out-work),
+    border-color 0.25s var(--ease-out-work),
+    backdrop-filter 0.25s var(--ease-out-work);
+  border-bottom: 1px solid transparent;
+}
+
+.site-nav--scrolled {
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom-color: rgba(11, 27, 58, 0.06);
+  box-shadow: 0 12px 32px -8px rgba(16, 42, 96, 0.08);
+}
+
+.nav-pill {
+  @apply relative flex items-center rounded-full;
+}
+
+.nav-link {
+  @apply relative rounded-full px-4 py-2 text-body-md font-medium;
+  color: var(--ink-soft);
+  transition: color 150ms var(--ease-out-work);
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  color: var(--ink);
+}
+
+.nav-link--active {
+  color: var(--azure-600);
+}
+
+.nav-link--active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--azure-50);
+  z-index: -1;
+}
+
+/* ------------------------------------------------------------
+   13. 页面过渡
+   ------------------------------------------------------------ */
+.page-enter {
+  animation: page-in 0.4s var(--ease-out-work) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* ------------------------------------------------------------
+   14. 光标光晕（桌面端，App 外壳渲染）
+   ------------------------------------------------------------ */
+.cursor-halo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+  width: 480px;
+  height: 480px;
+  margin: -240px 0 0 -240px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(47, 107, 255, 0.06), transparent 62%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-work);
+  will-change: transform;
+}
+
+.cursor-halo--visible {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-halo {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   15. 顶部滚动进度条（品牌渐变第 3 处）
+   ------------------------------------------------------------ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  z-index: 60;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  background-image: var(--grad-brand);
+}
+
+/* BlurHighlight 样式见组件自有 BlurHighlight.css */
+
+/* ------------------------------------------------------------
+   17. 细节工具
+   ------------------------------------------------------------ */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* 分区底色交替 */
+.sec-deep {
+  background: var(--bg-deep);
+}
+
+/* hairline 分隔 */
+.hairline-t {
+  border-top: 1px solid var(--line);
+}
+
+.hairline-b {
+  border-bottom: 1px solid var(--line);
+}
+
+/* 链接悬浮箭头位移 */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--azure-500);
+  font-weight: 500;
+  transition: color 150ms var(--ease-out-work);
+}
+
+.link-arrow svg {
+  transition: transform 150ms var(--ease-out-work);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link-arrow:hover {
+    color: var(--azure-600);
+  }
+  .link-arrow:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+/* 图片/封面灰度态（客户 Logo 墙用） */
+.logo-dim {
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition:
+    filter 0.25s var(--ease-out-work),
+    opacity 0.25s var(--ease-out-work);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logo-dim:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------
+   18. 降级：reduced-motion（design.md §7.5）
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .blur-highlight__word,
+  .blur-highlight__sweep {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .cursor-halo {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   19. PDF 导出辅助（exportPDF 切换 .pdf-mode）
+   ------------------------------------------------------------ */
+.pdf-mode .cursor-halo,
+.pdf-mode .scroll-progress,
+.pdf-mode .site-bg::after,
+.pdf-mode .site-nav {
+  display: none !important;
+}
+
+.pdf-mode .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.pdf-mode body {
+  background: #f5f8ff !important;
+}
